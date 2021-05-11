@@ -1,0 +1,3 @@
+Information Disclosure in error Messages
+eg; test parameter ?id=2 by changing to ?id=two
+
