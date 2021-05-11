@@ -1,0 +1,10 @@
+The most common place you will find LFI Vulnerabilities is within templating engines. This is because websites want to keep a large majority of the website the same when navigating between pages, such as the header, navigation bar, and footer. 
+
+This is why you will often see a parameter like /index.php?page=about. Under the hood, index.php will probably pull header.php, about.php, and footer.php. Since you control the about portion of the request, it may be possible to have the webserver grab other files! Another common place is within languages. If you see ?lang=en; then the website will grab files from the /en/ directory.
+
+
+Other Places
+Template Engines are not the only place an LFI Vulnerability can be discovered. It can be found anytime the server allows a user to download a file. For example, imagine if the Hack The Box server-side code to retrieve your avatar downloaded from /profile/$username/avatar.png. If you managed to craft a malicious username, it might be possible to change that file request to /profile/../../../../etc/passwd avatar.png and grab /etc/passwd instead of your avatar. Poisoning the database entry and having a separate function utilize that poisoned entry is called "Second Order". Developers often overlook these vulnerabilities because they are in the mindset of "Never Trust User Input". In this example, the retrieve avatar function is grabbing data from the database, and the developer may not realize it is actually user input.
+
+File inclusion vulnerabilities can often be found in GET request parameters. Server-side scripts include certain files based on the user's choice or input, for example, file downloads, choice of language, or website navigation.
+
