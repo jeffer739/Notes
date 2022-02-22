@@ -1,3 +1,62 @@
+ENUMERATON-
+
+Hostname
+uname -a (additional detail about the kernel used by the system) 
+/proc/version (information on the kernel version and additional data such as whether a compiler (e.g. GCC) is installed.)
+/etc/issue ()
+ps command - ps aux, ps -A, ps axjf
+env - environmental variables
+sudo -l 
+ls
+ls -l
+id
+/etc/passwd - cat /etc/passwd | cut -d ":" -f 1 (get the users list for bruteforce)
+history
+ifconfig
+ip route
+netstat - netstat -at (tcp port) - netstat -au (udp) - netstat -l (all port) - netstat -s (output with statistics) - netstat -ltp 
+find -
+
+`````````Find files:
+
+find . -name flag1.txt: find the file named “flag1.txt” in the current directory
+find /home -name flag1.txt: find the file names “flag1.txt” in the /home directory
+find / -type d -name config: find the directory named config under “/”
+find / -type f -perm 0777: find files with the 777 permissions (files readable, writable, and executable by all users)
+find / -perm a=x: find executable files
+find /home -user frank: find all files for user “frank” under “/home”
+find / -mtime 10: find files that were modified in the last 10 days
+find / -atime 10: find files that were accessed in the last 10 day
+find / -cmin -60: find files changed within the last hour (60 minutes)
+find / -amin -60: find files accesses within the last hour (60 minutes)
+find / -size 50M: find files with a 50 MB size
+This command can also be used with (+) and (-) signs to specify a file that is larger or smaller than the given size.````
+---------
+Folders and files that can be written to or executed from:
+
+find / -writable -type d 2>/dev/null : Find world-writeable folders
+find / -perm -222 -type d 2>/dev/null: Find world-writeable folders
+find / -perm -o w -type d 2>/dev/null: Find world-writeable folders
+
+
+find / -perm -o x -type d 2>/dev/null : Find world-executable folders
+Find development tools and supported languages:
+
+find / -name perl*
+find / -name python*
+find / -name gcc*
+
+
+find / -perm -u=s -type f 2>/dev/null
+--------------
+
+
+
+
+
+
+
+
 User accounts are configured in the /etc/passwd 
 User hashes are stored in the /etc/shadow
 Root uid = 0
