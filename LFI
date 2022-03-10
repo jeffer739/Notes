@@ -49,7 +49,7 @@ Scripts can manually append a .php or any other required extension before includ
 Source code disclosure via PHP wrappers - https://www.php.net/manual/en/wrappers.php.php
 For example, the filter php://filter/read=/resource=/etc/passwd reads the resource /etc/passwd and outputs the contents. The read filter can process the input with various string operations, such as base64 encoding, ROT13 encoding, etc.
 The following filters will convert the contents of /etc/passwd to base64 and ROT13, respectively.
-  Source Code Disclosure via PHP Wrappersphp://filter/read=convert.base64-encode/resource=/etc/passwd
+  Source Code Disclosure via PHP Wrappers php://filter/read=convert.base64-encode/resource=/etc/passwd
 php://filter/read=string.rot13/resource=/etc/passwd
 
 
